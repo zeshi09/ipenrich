@@ -5,17 +5,13 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+
+	"github.com/zeshi09/ipenrich/model"
 )
 
 var (
 	abuseApiKey = os.Getenv("ABUSEIPDB_API_KEY")
 )
-
-type abuseInfo struct {
-	Data struct {
-		AbuseConfidenseScore int `json:"abuseConfidenceScore"`
-	} `json:"data"`
-}
 
 func FetchAbuseScore(ip string) string {
 	if abuseApiKey == "" {
@@ -34,7 +30,7 @@ func FetchAbuseScore(ip string) string {
 	}
 	defer resp.Body.Close()
 
-	var result abuseInfo
+	var result model.AbuseInfo
 
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return "error"

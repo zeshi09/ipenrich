@@ -5,24 +5,13 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+
+	"github.com/zeshi09/ipenrich/model"
 )
 
 var (
 	apiKey = os.Getenv("VT_API_KEY")
 )
-
-type VTResponse struct {
-	Data struct {
-		Attributes struct {
-			LastAnalysisStats struct {
-				Harmless   int `json:"harmless"`
-				Malicious  int `json:"malicious"`
-				Suspicious int `json:"suspicious"`
-				Undetected int `json:"undetected"`
-			} `json:"last_analysis_stats"`
-		} `json:"attributes"`
-	} `json:"data"`
-}
 
 func FetchVTStats(ip string) string {
 	if apiKey == "" {
@@ -41,7 +30,7 @@ func FetchVTStats(ip string) string {
 	}
 	defer resp.Body.Close()
 
-	var result VTResponse
+	var result model.VTResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return "error"
 	}

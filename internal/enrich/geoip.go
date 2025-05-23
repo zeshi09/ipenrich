@@ -4,14 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-)
 
-type geoInfo struct {
-	Query   string `json:"query"`
-	Country string `json:"country"`
-	City    string `json:"city"`
-	Org     string `json:"org"`
-}
+	"github.com/zeshi09/ipenrich/model"
+)
 
 func FetchGeoInfo(ip string) string {
 	url := fmt.Sprintf("http://ip-api.com/json/%s?fields=country,city,org,query", ip)
@@ -22,7 +17,7 @@ func FetchGeoInfo(ip string) string {
 	}
 	defer resp.Body.Close()
 
-	var info geoInfo
+	var info model.GeoInfo
 
 	err = json.NewDecoder(resp.Body).Decode(&info)
 	if err != nil {
