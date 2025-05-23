@@ -14,7 +14,7 @@ func ReadingFile(logFile string) ([]string, error) {
 	defer f.Close()
 
 	scanner := bufio.NewScanner(f)
-	re := regexp.MustCompile(`\b(?:\d{1,3}\.){3}\d{1,3}\b`)
+	re := regexp.MustCompile(`\b(?:\d{1,3}\.){3}\d{1,3}\b`) // regex for matching IP addresses
 	unique := make(map[string]bool)
 
 	for scanner.Scan() {
@@ -26,6 +26,7 @@ func ReadingFile(logFile string) ([]string, error) {
 	}
 
 	var result []string
+
 	for ip := range unique {
 		result = append(result, ip)
 	}

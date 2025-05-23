@@ -4,17 +4,10 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/charmbracelet/bubbles/progress"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
 	"github.com/spf13/cobra"
 	"github.com/zeshi09/ipenrich/internal/parser"
 	"github.com/zeshi09/ipenrich/ui"
-)
-
-var (
-	headerStyle   = lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("63"))
-	progressStyle = progress.New(progress.WithDefaultGradient())
 )
 
 var rootCmd = &cobra.Command{

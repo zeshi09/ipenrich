@@ -11,7 +11,6 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/zeshi09/ipenrich/internal/enrich"
-	// "github.com/zeshi09/ipenrich/cmd"
 )
 
 var (
@@ -21,14 +20,26 @@ var (
 	cellStyle     = lipgloss.NewStyle().Padding(0, 2).Foreground(lipgloss.Color("249"))
 	tableHeader   = lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("245")).Render
 	tableRow      = lipgloss.NewStyle().Foreground(lipgloss.Color("250")).Render
-	abuseLow      = lipgloss.NewStyle().Foreground(lipgloss.Color("10"))  // 🟢 зелёный
-	abuseMid      = lipgloss.NewStyle().Foreground(lipgloss.Color("214")) // 🟠 жёлтый
-	abuseHigh     = lipgloss.NewStyle().Foreground(lipgloss.Color("9"))   // 🔴 красный
-	vtLow         = lipgloss.NewStyle().Foreground(lipgloss.Color("10"))  // green
-	vtMid         = lipgloss.NewStyle().Foreground(lipgloss.Color("214")) // yellow
-	vtHigh        = lipgloss.NewStyle().Foreground(lipgloss.Color("9"))   // red
-
+	abuseLow      = lipgloss.NewStyle().Foreground(lipgloss.Color("10"))
+	abuseMid      = lipgloss.NewStyle().Foreground(lipgloss.Color("214"))
+	abuseHigh     = lipgloss.NewStyle().Foreground(lipgloss.Color("9"))
+	vtLow         = lipgloss.NewStyle().Foreground(lipgloss.Color("10"))
+	vtMid         = lipgloss.NewStyle().Foreground(lipgloss.Color("214"))
+	vtHigh        = lipgloss.NewStyle().Foreground(lipgloss.Color("9"))
 )
+
+type model struct {
+	logFile  string
+	progress progress.Model
+	percent  float64
+	done     bool
+	index    int
+	ips      []string
+	viewport viewport.Model
+	geo      map[string]string
+	abuse    map[string]string
+	vt       map[string]string
+}
 
 func InitialModel(logPath string, ips []string) tea.Model {
 	vp := viewport.New(160, 30)
@@ -44,19 +55,6 @@ func InitialModel(logPath string, ips []string) tea.Model {
 		abuse:    make(map[string]string),
 		vt:       make(map[string]string),
 	}
-}
-
-type model struct {
-	logFile  string
-	progress progress.Model
-	percent  float64
-	done     bool
-	index    int
-	ips      []string
-	viewport viewport.Model
-	geo      map[string]string
-	abuse    map[string]string
-	vt       map[string]string
 }
 
 func (m model) Init() tea.Cmd {
@@ -82,6 +80,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	m.vt[ip] = enrich.FetchVTStats(ip)
 	m.index++
 	m.percent = float64(m.index) / float64(len(m.ips))
+
 	if m.index >= len(m.ips) {
 		m.percent = 1.0
 		m.done = true
@@ -109,25 +108,13 @@ func (m model) View() string {
 		len(m.ips),
 		bar,
 	)
+
 	return status
-}
-
-func tick() tea.Cmd {
-	return tea.Tick(100*time.Millisecond, func(t time.Time) tea.Msg {
-		return struct{}{}
-	})
-}
-
-func padRight(str string, length int) string {
-	visibleLen := lipgloss.Width(str)
-	if visibleLen >= length {
-		return str
-	}
-	return str + strings.Repeat(" ", length-visibleLen)
 }
 
 func renderIPTable(ips []string, geo map[string]string, abuse map[string]string, vt map[string]string) string {
 	var b strings.Builder
+
 	b.WriteString(tableHeader(fmt.Sprintf("%-3s  │ %-15s │ %-30s │ %-30s │ %-7s │ %-9s │", "#", "IP", "Location", "Organization", "Abuse", "VTStats")))
 	header := fmt.Sprintf("%-3s  │ %-15s │ %-30s │ %-30s │ %-7s │ %-9s │", "#", "IP", "Location", "Organization", "Abuse", "VTStats")
 	b.WriteString("\n" + strings.Repeat("─", lipgloss.Width(header)) + "\n")
@@ -167,7 +154,7 @@ func renderIPTable(ips []string, geo map[string]string, abuse map[string]string,
 				coloredScore = abuseLow.Render(score)
 			}
 		}
-		// row := fmt.Sprintf("%-3d  │ %-15s │ %-30s │ %-30s │ %-7s │ %-9s │", i+1, ip, loc, org, coloredScore, coloredVT)
+
 		row := fmt.Sprintf("%-3d  │ %s │ %s │ %s │ %s │ %s │",
 			i+1,
 			padRight(ip, 15),
@@ -180,4 +167,18 @@ func renderIPTable(ips []string, geo map[string]string, abuse map[string]string,
 		b.WriteString(tableRow(row) + "\n")
 	}
 	return b.String()
+}
+
+func tick() tea.Cmd {
+	return tea.Tick(100*time.Millisecond, func(t time.Time) tea.Msg {
+		return struct{}{}
+	})
+}
+
+func padRight(str string, length int) string {
+	visibleLen := lipgloss.Width(str)
+	if visibleLen >= length {
+		return str
+	}
+	return str + strings.Repeat(" ", length-visibleLen)
 }
