@@ -4,10 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	tea "github.com/charmbracelet/bubbletea"
 	"github.com/spf13/cobra"
 	"github.com/zeshi09/ipenrich/internal/parser"
-	"github.com/zeshi09/ipenrich/ui"
 )
 
 var rootCmd = &cobra.Command{
@@ -27,16 +25,12 @@ var rootCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		p := tea.NewProgram(ui.InitialModel(logFile, ips), tea.WithAltScreen())
-		if _, err := p.Run(); err != nil {
-			fmt.Println("TUI Error:", err)
-			os.Exit(1)
-		}
-
+		fmt.Printf("%d IPs was found in %s\n", len(ips), logFile)
 	},
 }
 
 func Execute() {
+	// rootCmd.AddCommand(enrich.Command)
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)

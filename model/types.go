@@ -1,5 +1,13 @@
 package model
 
+type EnrichedIP struct {
+	LogFile string
+	Ip      string
+	Geo     map[string]string
+	Abuse   int
+	Vt      map[string]int
+}
+
 type GeoInfo struct {
 	Query   string `json:"query"`
 	Country string `json:"country"`
