@@ -1,11 +1,26 @@
 package model
 
+//	type EnrichedIP struct {
+//		LogFile string
+//		Ip      string
+//		Geo     map[string]string
+//		Abuse   int
+//		Vt      map[string]int
+//	}
 type EnrichedIP struct {
-	LogFile string
-	Ip      string
-	Geo     map[string]string
-	Abuse   int
-	Vt      map[string]int
+	LogFile string `json:"log_file"`
+	Ip      string `json:"ip"`
+	Dns     string `json:"dns_name"`
+	Country string `json:"country"`
+	City    string `json:"city"`
+	Org     string `json:"org"`
+
+	AbuseScore int `json:"abuse_score"`
+
+	VTMalicious  int `json:"vt_malicious"`
+	VTSuspicious int `json:"vt_suspicious"`
+	VTHarmless   int `json:"vt_harmless"`
+	VTUndetected int `json:"vt_undetected"`
 }
 
 type GeoInfo struct {

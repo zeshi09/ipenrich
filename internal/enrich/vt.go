@@ -13,33 +13,28 @@ var (
 	apiKey = os.Getenv("VT_API_KEY")
 )
 
-func FetchVTStats(ip string) map[string]int {
+func FetchVTStats(ip string) (int, int, int, int) {
 	if apiKey == "" {
-		return nil
+		return 0, 0, 0, 0
 	}
 	url := fmt.Sprintf("https://www.virustotal.com/api/v3/ip_addresses/%s", ip)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		return nil
+		return 0, 0, 0, 0
 	}
 	req.Header.Set("x-apikey", apiKey)
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return nil
+		return 0, 0, 0, 0
 	}
 	defer resp.Body.Close()
 
 	var result model.VTResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil
+		return 0, 0, 0, 0
 	}
 
-	return map[string]int{
-		"harmless":   result.Data.Attributes.LastAnalysisStats.Harmless,
-		"malicious":  result.Data.Attributes.LastAnalysisStats.Malicious,
-		"suspicious": result.Data.Attributes.LastAnalysisStats.Suspicious,
-		"undetected": result.Data.Attributes.LastAnalysisStats.Undetected,
-	}
+	return result.Data.Attributes.LastAnalysisStats.Harmless, result.Data.Attributes.LastAnalysisStats.Malicious, result.Data.Attributes.LastAnalysisStats.Suspicious, result.Data.Attributes.LastAnalysisStats.Undetected
 
 }
