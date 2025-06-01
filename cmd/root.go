@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
-	"github.com/zeshi09/ipenrich/internal/parser"
+	// "github.com/zeshi09/ipenrich/internal/parser"
 )
 
 var rootCmd = &cobra.Command{
@@ -19,13 +19,13 @@ var rootCmd = &cobra.Command{
 
 		logFile := args[0]
 
-		ips, err := parser.ReadingFile(logFile)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Parsing file error: %s\n", err)
-			os.Exit(1)
-		}
+		// ips, err := parser.ReadingFile(logFile)
+		// if err != nil {
+		// 	fmt.Fprintf(os.Stderr, "Parsing file error: %s\n", err)
+		// 	os.Exit(1)
+		// }
 
-		fmt.Printf("%d IPs was found in %s\n", len(ips), logFile)
+		fmt.Printf("Please, dont'be a dummy, set the specific command for parsing %s\n", logFile)
 	},
 }
 

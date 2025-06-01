@@ -13,7 +13,7 @@ var (
 	apiKey = os.Getenv("VT_API_KEY")
 )
 
-func FetchVTStats(ip string) (int, int, int, int) {
+func FetchVTStatsIP(ip string) (int, int, int, int) {
 	if apiKey == "" {
 		return 0, 0, 0, 0
 	}
