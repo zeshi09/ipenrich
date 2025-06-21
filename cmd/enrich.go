@@ -7,7 +7,6 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
-	// "github.com/zeshi09/ipenrich/internal/db"
 	"github.com/zeshi09/ipenrich/internal/enrich"
 	"github.com/zeshi09/ipenrich/internal/parser"
 
